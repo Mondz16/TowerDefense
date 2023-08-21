@@ -12,10 +12,13 @@ namespace TowerDefense.PathFinding
         private AStarPathfinder Pathfinder;
         [SerializeField]
         private List<Node> _path;
+        private MapManager _map;
+        private Node _targetNode;
 
         private void Start()
         {
             Pathfinder = new AStarPathfinder();
+            _map = MapManager.Instance;
         }
 
         private void LateUpdate()
@@ -24,22 +27,30 @@ namespace TowerDefense.PathFinding
 
             if (hit.HasValue)
             {
-                if (Input.GetMouseButtonDown(0))
+                if (hit.Value.collider.gameObject.GetComponent<Node>() != _targetNode)
                 {
-                    Node tile = hit.Value.collider.gameObject.GetComponent<Node>();
+                    _targetNode = hit.Value.collider.gameObject.GetComponent<Node>();
                     if (MapManager.Instance.map.TryGetValue(_startCell, out Node startNode))
                     {
-                        _path = Pathfinder.FindPath(startNode, tile);
+                        _path = Pathfinder.FindPath(startNode, _targetNode);
                         Debug.Log($"Start has value: {startNode.gridLocation} " +
-                                  $"--> tile: {tile.gridLocation}  ---- " +
+                                  $"--> tile: {_targetNode.gridLocation}  ---- " +
                                   $"PathCount: {_path.Count}");
 
                         if (_path != null)
                         {
+                            foreach (KeyValuePair<Vector2Int,Node> keyValuePair in _map.map)
+                                keyValuePair.Value.HideNode();
+                            
+                            startNode.ShowNode(Color.green);
+                            
                             foreach (Node node in _path)
                             {
                                 Debug.Log($"Node: x:{node.x} | y:{node.y} | fcost:{node.fCost} | hcost:{node.hCost} | gcost:{node.gCost}");
-                                node.ShowNode();
+                                if (node == _targetNode)
+                                    node.ShowNode(Color.red);
+                                else
+                                    node.ShowNode(Color.black);
                             }
                         }
                     }

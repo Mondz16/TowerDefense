@@ -21,27 +21,28 @@ namespace TowerDefense.PathFinding
                 closedList.Add(currentNode);
 
                 if (currentNode == end)
-                {
                     return GetFinishedList(start, end);
-                }
 
                 foreach (var tile in GetNeightbourNodes(currentNode))
                 {
-                    if (!tile.isWalkable || closedList.Contains(tile) || Mathf.Abs(currentNode.transform.position.z - tile.transform.position.z) > 1)
+                    if (!tile.isWalkable || closedList.Contains(tile))
                     {
                         continue;
                     }
+                    
+                    int tentativeGCost = currentNode.gCost + GetManhattenDistance(currentNode, tile);
 
-                    tile.gCost = GetManhattenDistance(start, tile);
-                    tile.hCost = GetManhattenDistance(end, tile);
-
-                    tile.parent = currentNode;
-
-
-                    if (!openList.Contains(tile))
+                    if (tentativeGCost < tile.gCost || !openList.Contains(tile))
                     {
-                        openList.Add(tile);
-                        Debug.Log($"Tile: {tile.gridLocation}");
+                        tile.gCost = tentativeGCost;
+                        tile.hCost = GetManhattenDistance(tile, end);
+                        tile.parent = currentNode;
+
+                        if (!openList.Contains(tile))
+                        {
+                            openList.Add(tile);
+                            Debug.Log($"Tile: {tile.gridLocation}");
+                        }
                     }
                 }
             }

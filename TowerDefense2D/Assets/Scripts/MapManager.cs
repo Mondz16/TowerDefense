@@ -47,10 +47,10 @@ namespace TowerDefense.PathFinding
                                 if (!map.ContainsKey(new Vector2Int(x, y)))
                                 {
                                     var overlayTile = Instantiate(overlayPrefab, overlayContainer.transform);
-                                    var cellWorldPosition = tm.GetCellCenterWorld(new Vector3Int(x, y, z));
+                                    var cellWorldPosition = tm.GetCellCenterWorld(new Vector3Int(x, y));
                                     overlayTile.transform.position = new Vector3(cellWorldPosition.x, cellWorldPosition.y, cellWorldPosition.z + 1);
-                                    overlayTile.gameObject.GetComponent<Node>().gridLocation = new Vector3Int(x, y, z);
-    
+                                    overlayTile.gameObject.GetComponent<Node>().gridLocation = new Vector2Int(x, y);
+                                    
                                     map.Add(new Vector2Int(x, y), overlayTile.gameObject.GetComponent<Node>());
                                 }
                             }

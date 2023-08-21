@@ -13,7 +13,7 @@ namespace TowerDefense.PathFinding
         public SpriteRenderer _sprite;
 
         public int fCost => gCost + hCost;
-        public Vector3Int gridLocation;
+        public Vector2Int gridLocation;
 
         public Node(int x, int y, bool isWalkable)
         {
@@ -22,9 +22,9 @@ namespace TowerDefense.PathFinding
             this.isWalkable = isWalkable;
         }
 
-        public void ShowNode()
+        public void ShowNode(Color color)
         {
-            _sprite.color = new Color(1, 1, 1, 1);
+            _sprite.color = color;
         }
 
         public void HideNode()

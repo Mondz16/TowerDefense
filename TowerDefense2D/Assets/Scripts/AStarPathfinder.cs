@@ -41,7 +41,6 @@ namespace TowerDefense.PathFinding
                         if (!openList.Contains(tile))
                         {
                             openList.Add(tile);
-                            Debug.Log($"Tile: {tile.gridLocation}");
                         }
                     }
                 }

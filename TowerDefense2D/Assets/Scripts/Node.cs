@@ -25,6 +25,7 @@ namespace TowerDefense.PathFinding
         public void ShowNode(Color color)
         {
             _sprite.color = color;
+            Debug.Log($"#{GetType().Name}# ShowNode Color -> {color}");
         }
 
         public void HideNode()

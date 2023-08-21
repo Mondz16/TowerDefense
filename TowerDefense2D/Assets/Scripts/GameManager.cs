@@ -1,24 +1,41 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TowerDefense.PathFinding
 {
     public class GameManager : MonoBehaviour
     {
-        public GridManager gridManager;
         public Vector2Int _startCell;
+        public Vector2Int _targetCell;
         private AStarPathfinder Pathfinder;
         [SerializeField]
-        private List<Node> _path;
+        private Runner _runner;
+        
+        [SerializeField] private List<Node> _path;
+        private List<Node> _blockers;
         private MapManager _map;
+        private Node _startNode;
         private Node _targetNode;
+        private Runner _localRunner;
 
         private void Start()
         {
             Pathfinder = new AStarPathfinder();
             _map = MapManager.Instance;
+            _blockers = new List<Node>();
+
+            if (MapManager.Instance.map.TryGetValue(_startCell, out Node startNode) && MapManager.Instance.map.TryGetValue(_targetCell, out Node targetNode))
+            {
+                _startNode = startNode;
+                _targetNode = targetNode;
+                _localRunner = Instantiate(_runner, new Vector3(_startCell.x, _startCell.y, 0), Quaternion.identity);
+            }
+            
+            CreatePath();
         }
 
         private void LateUpdate()
@@ -27,65 +44,75 @@ namespace TowerDefense.PathFinding
 
             if (hit.HasValue)
             {
-                if (hit.Value.collider.gameObject.GetComponent<Node>() != _targetNode)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    _targetNode = hit.Value.collider.gameObject.GetComponent<Node>();
-                    if (MapManager.Instance.map.TryGetValue(_startCell, out Node startNode))
+                    Node hitNode = hit.Value.collider.gameObject.GetComponent<Node>();
+                    if (!_blockers.Exists(x => x == hitNode))
                     {
-                        _path = Pathfinder.FindPath(startNode, _targetNode);
-                        Debug.Log($"Start has value: {startNode.gridLocation} " +
-                                  $"--> tile: {_targetNode.gridLocation}  ---- " +
-                                  $"PathCount: {_path.Count}");
-
-                        if (_path != null)
+                        hitNode.isWalkable = false;
+                        if (FindPath())
                         {
-                            foreach (KeyValuePair<Vector2Int,Node> keyValuePair in _map.map)
-                                keyValuePair.Value.HideNode();
-                            
-                            startNode.ShowNode(Color.green);
-                            
-                            foreach (Node node in _path)
-                            {
-                                Debug.Log($"Node: x:{node.x} | y:{node.y} | fcost:{node.fCost} | hcost:{node.hCost} | gcost:{node.gCost}");
-                                if (node == _targetNode)
-                                    node.ShowNode(Color.red);
-                                else
-                                    node.ShowNode(Color.black);
-                            }
+                            hitNode.ShowNode(Color.blue);
+                            _blockers.Add(hitNode);
+                            CreatePath();
+                        }
+                        else
+                        {
+                            hitNode.HideNode();
+                            hitNode.isWalkable = true;
+                            CreatePath();
+                            Debug.LogError("No Path Found!");
                         }
                     }
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Space) && _path.Count > 0)
+            if (Input.GetKeyDown(KeyCode.Space) && _blockers.Count > 0)
+            {
+                foreach (Node blocker in _blockers)
+                {
+                    blocker.isWalkable = true;
+                    blocker.HideNode();
+                }
+                
+                _blockers.Clear();
+                CreatePath();
+            }
+        }
+
+        private void CreatePath()
+        {
+            if (FindPath())
+            {
+                _localRunner.transform.position = new Vector3(_startCell.x, _startCell.y, 0);
+                _startNode.ShowNode(Color.green);
+
+                foreach (Node node in _path)
+                {
+                    Debug.Log(
+                        $"Node: x:{node.x} | y:{node.y} | fcost:{node.fCost} | hcost:{node.hCost} | gcost:{node.gCost}");
+                    if (node == _targetNode)
+                        node.ShowNode(Color.red);
+                    else
+                        node.ShowNode(Color.grey);
+                }
+                
+                _localRunner.AddPath(_path);
+            }
+        }
+
+        private bool FindPath()
+        {
+            if (_path.Count > 0)
             {
                 foreach (Node node in _path)
                     node.HideNode();
-                
+
                 _path.Clear();
             }
-        }
-        
-        private void FindPath()
-        {
-            Node startCell = new Node(0, 0, true);
-            Node targetCell = new Node(4, 4, true);
-            List<Node> path = Pathfinder.FindPath(startCell, targetCell);
-            Debug.Log($"Start Pathfinding! Path Count: {path.Count}");
 
-            if (path != null)
-            {
-                foreach (Node node in path)
-                {
-                    Debug.Log($"Node: x:{node.x} | y:{node.y} | fcost:{node.fCost} | hcost:{node.hCost} | gcost:{node.gCost}");
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawWireCube(new Vector3(node.x + 0.5f, node.y + 0.5f, 0), Vector3.one);
-                }
-            }
-            else
-            {
-                // No path found
-            }
+            _path = Pathfinder.FindPath(_startNode, _targetNode);
+            return _path.Count > 0 && _path != null;
         }
 
         private static RaycastHit2D? GetFocusedOnTile()

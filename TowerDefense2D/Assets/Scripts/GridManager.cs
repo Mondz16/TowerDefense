@@ -31,9 +31,10 @@ public class GridManager : MonoBehaviour
     //     }
     // }
 
-    public Node GetNode(Vector3Int cellPosition)
+    public Node GetNode(Vector2Int cellPosition)
     {
-        bool isWalkable = walkableTilemap.GetTile(cellPosition) != null;
+        Vector3Int cellPos = new Vector3Int(cellPosition.x, cellPosition.y, 0);
+        bool isWalkable = walkableTilemap.GetTile(cellPos) != null;
         return new Node(cellPosition.x, cellPosition.y, isWalkable);
     }
 }

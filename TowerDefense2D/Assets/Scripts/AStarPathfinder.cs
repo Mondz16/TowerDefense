@@ -6,91 +6,121 @@ namespace TowerDefense.PathFinding
 {
     public class AStarPathfinder
     {
-        public static List<Node> FindPath(GridManager gridManager, Vector3Int startCell, Vector3Int targetCell)
+         public  List<Node> FindPath(Node start, Node end)
         {
-            var startNode = gridManager.GetNode(startCell);
-            var targetNode = gridManager.GetNode(targetCell);
+            List<Node> openList = new List<Node>();
+            List<Node> closedList = new List<Node>();
 
-            var openSet = new List<Node>();
-            var closedSet = new HashSet<Node>();
-            openSet.Add(startNode);
+            openList.Add(start);
 
-            while (openSet.Count > 0)
+            while (openList.Count > 0)
             {
-                Node currentNode = openSet[0];
-                for (int i = 1; i < openSet.Count; i++)
+                Node currentNode = openList.OrderBy(x => x.fCost).First();
+
+                openList.Remove(currentNode);
+                closedList.Add(currentNode);
+
+                if (currentNode == end)
                 {
-                    if (openSet[i].fCost < currentNode.fCost || 
-                        (openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost))
+                    return GetFinishedList(start, end);
+                }
+
+                foreach (var tile in GetNeightbourNodes(currentNode))
+                {
+                    if (!tile.isWalkable || closedList.Contains(tile) || Mathf.Abs(currentNode.transform.position.z - tile.transform.position.z) > 1)
                     {
-                        currentNode = openSet[i];
+                        continue;
+                    }
+
+                    tile.gCost = GetManhattenDistance(start, tile);
+                    tile.hCost = GetManhattenDistance(end, tile);
+
+                    tile.parent = currentNode;
+
+
+                    if (!openList.Contains(tile))
+                    {
+                        openList.Add(tile);
+                        Debug.Log($"Tile: {tile.gridLocation}");
                     }
                 }
-                openSet.Remove(currentNode);
-                closedSet.Add(currentNode);
-
-                if (currentNode == targetNode) return RetracePath(startNode, targetNode);
-
-                foreach (var neighbor in GetNeighbors(gridManager, currentNode))
-                {
-                    if (!neighbor.isWalkable || closedSet.Contains(neighbor)) continue;
-                    var newCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
-                    if (newCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
-                    {
-                        neighbor.gCost = newCostToNeighbor;
-                        neighbor.hCost = GetDistance(neighbor, targetNode);
-                        neighbor.parent = currentNode;
-                        
-                        if(!openSet.Contains(neighbor))openSet.Add(neighbor);
-                    }
-                }
             }
 
-            return null;
+            return new List<Node>();
         }
 
-        private static List<Node> RetracePath(Node startNode, Node endNode)
+        private  List<Node> GetFinishedList(Node start, Node end)
         {
-            var path = new List<Node>();
-            var currentNode = endNode;
+            List<Node> finishedList = new List<Node>();
+            Node currentTile = end;
 
-            while (currentNode != startNode)
+            while (currentTile != start)
             {
-                path.Add(currentNode);
-                currentNode = currentNode.parent;
+                finishedList.Add(currentTile);
+                currentTile = currentTile.parent;
             }
 
-            path.Reverse();
+            finishedList.Reverse();
 
-            return path;
+            return finishedList;
         }
 
-        private static int GetDistance(Node nodeA, Node nodeB)
+        private  int GetManhattenDistance(Node start, Node tile)
         {
-            var distX = Mathf.Abs(nodeA.x - nodeB.x);
-            var distY = Mathf.Abs(nodeA.y - nodeB.y);
-            return distX + distY;
+            return Mathf.Abs(start.gridLocation.x - tile.gridLocation.x) + Mathf.Abs(start.gridLocation.y - tile.gridLocation.y);
         }
 
-        private static List<Node> GetNeighbors(GridManager gridManager, Node node)
+        private List<Node> GetNeightbourNodes(Node currentNode)
         {
-            List<Node> neighbors = new List<Node>();
-            Vector2Int[] directions = {
-                Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
-            };
+            var map = MapManager.Instance.map;
 
-            foreach (Vector2Int dir in directions)
+            List<Node> neighbours = new List<Node>();
+
+            //right
+            Vector2Int locationToCheck = new Vector2Int(
+                currentNode.gridLocation.x + 1,
+                currentNode.gridLocation.y
+            );
+
+            if (map.ContainsKey(locationToCheck))
             {
-                Vector3Int neighborCell = new Vector3Int(node.x + dir.x, node.y + dir.y, 0);
-                Node neighborNode = gridManager.GetNode(neighborCell);
-
-                if (neighborNode != null && neighborNode.isWalkable)
-                {
-                    neighbors.Add(neighborNode);
-                }
+                neighbours.Add(map[locationToCheck]);
             }
 
-            return neighbors;
+            //left
+            locationToCheck = new Vector2Int(
+                currentNode.gridLocation.x - 1,
+                currentNode.gridLocation.y
+            );
+
+            if (map.ContainsKey(locationToCheck))
+            {
+                neighbours.Add(map[locationToCheck]);
+            }
+
+            //top
+            locationToCheck = new Vector2Int(
+                currentNode.gridLocation.x,
+                currentNode.gridLocation.y + 1
+            );
+
+            if (map.ContainsKey(locationToCheck))
+            {
+                neighbours.Add(map[locationToCheck]);
+            }
+
+            //bottom
+            locationToCheck = new Vector2Int(
+                currentNode.gridLocation.x,
+                currentNode.gridLocation.y - 1
+            );
+
+            if (map.ContainsKey(locationToCheck))
+            {
+                neighbours.Add(map[locationToCheck]);
+            }
+
+            return neighbours;
         }
     }
 }

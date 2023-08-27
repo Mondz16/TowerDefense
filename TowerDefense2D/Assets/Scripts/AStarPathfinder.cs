@@ -72,7 +72,7 @@ namespace TowerDefense.PathFinding
 
         private List<Node> GetNeightbourNodes(Node currentNode)
         {
-            var map = MapManager.Instance.map;
+            var map = MapManager.Service.map;
 
             List<Node> neighbours = new List<Node>();
 

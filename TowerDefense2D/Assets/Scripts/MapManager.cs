@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Manic.Services;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -7,27 +8,25 @@ namespace TowerDefense.PathFinding
 {
     public class MapManager : MonoBehaviour
     {
-        private static MapManager _instance;
-        public static MapManager Instance { get { return _instance; } }
+        public static MapManager Service
+        {
+            get
+            {
+                if (_ == null)
+                    _ = Game.Services.Get<MapManager>();
 
+                return _;
+            }
+        }
+
+        private static MapManager _;
 
         public GameObject overlayPrefab;
         public GameObject overlayContainer;
 
         public Dictionary<Vector2Int, Node> map;
 
-        private void Awake()
-        {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(this.gameObject);
-            } else
-            {
-                _instance = this;
-            }
-        }
-
-        void Start()
+        public void Initialize()
         {
             var tileMaps = gameObject.transform.GetComponentsInChildren<Tilemap>().OrderByDescending(x => x.GetComponent<TilemapRenderer>().sortingOrder);
             map = new Dictionary<Vector2Int, Node>();

@@ -1,10 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Manic.Services;
 using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
+    public static PoolManager Service
+    {
+        get
+        {
+            if (_ == null)
+                _ = Game.Services.Get<PoolManager>();
+
+            return _;
+        }
+    }
+
+    private static PoolManager _;
+    
     [SerializeField] private PoolItem[] _poolItems;
 
     private readonly Dictionary<int, bool> _growableBool = new Dictionary<int, bool>();

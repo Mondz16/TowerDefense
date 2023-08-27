@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c7aeda74590747409347dd87c13c4f1, type: 3}
+  m_Name: RunnerDataCollection
+  m_EditorClassIdentifier: 
+  _runnerDataList:
+  - ID: 0
+    RunnerName: Hamburger Hooligan
+    Health: 1
+    Speed: 2
+    Description: 
+    Prefab: {fileID: 5249277321085562909, guid: df16049a793a05e4e81f38ac2f6a652f, type: 3}
+  - ID: 1
+    RunnerName: Fries Sprinter
+    Health: 2
+    Speed: 5
+    Description: 
+    Prefab: {fileID: 5249277321085562909, guid: 743407d7c55a7e84390fac762e4a960c, type: 3}
+  - ID: 2
+    RunnerName: Pasta Plunderer
+    Health: 4
+    Speed: 3
+    Description: 
+    Prefab: {fileID: 5249277321085562909, guid: bd8b42021a9fd2c47b7b3d0c3b602056, type: 3}
+  - ID: 3
+    RunnerName: Ice Cream Imp
+    Health: 3
+    Speed: 1
+    Description: 
+    Prefab: {fileID: 5249277321085562909, guid: 34627609cd44a8d4a966984c8afbd7f3, type: 3}
+  - ID: 4
+    RunnerName: Donut Dynamo
+    Health: 5
+    Speed: 2
+    Description: 
+    Prefab: {fileID: 5249277321085562909, guid: dfeaeb49e58a3154fa27451c6046bc9c, type: 3}
+  - ID: 5
+    RunnerName: Pizza Parader
+    Health: 10
+    Speed: 1
+    Description: 
+    Prefab: {fileID: 5249277321085562909, guid: 0071f06f57943f44dbf3c8ec2c954ce1, type: 3}

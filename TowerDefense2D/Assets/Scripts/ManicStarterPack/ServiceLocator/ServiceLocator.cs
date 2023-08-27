@@ -12,6 +12,11 @@ namespace Manic.Services
             _services.Add(typeof(T), serviceProvider);
         }
 
+        public void Add<T>(T instance)
+        {
+            _services.Add(typeof(T), instance);
+        }
+
         public void Remove<T>()
         {
             _services.Remove(typeof(T));

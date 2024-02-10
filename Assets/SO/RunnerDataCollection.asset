@@ -15,7 +15,7 @@ MonoBehaviour:
   _runnerDataList:
   - ID: 0
     RunnerName: Hamburger Hooligan
-    Health: 1
+    Health: 5
     Speed: 2
     Description: 
     Prefab: {fileID: 5249277321085562909, guid: df16049a793a05e4e81f38ac2f6a652f, type: 3}

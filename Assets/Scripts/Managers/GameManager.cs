@@ -24,6 +24,14 @@ namespace TowerDefense.PathFinding
         [SerializeField] private int _rightBorder = 8;
         [SerializeField] private int _leftBorder = -9;
         
+        [Header("Player Input")]
+        [SerializeField] private LayerMask _defenderLayerMask;
+        [SerializeField] private Transform _defenderHolder;
+        [SerializeField] private ShooterController _shooterController;
+
+        [Header("Debug")] [SerializeField] [ReadOnly]
+        private int _currentLevel = 1;
+        [SerializeField][ReadOnly] private List<Wave> _waveList;
         
         [SerializeField] private List<Node> _path;
         [SerializeField] private List<GameObject> _runnerWaveList;
@@ -33,7 +41,27 @@ namespace TowerDefense.PathFinding
         private int _waveCount = 0;
         private AStarPathfinder Pathfinder;
 
+        public static Action OnPlayerTouchFieldEvent { get; set; }
+        public static Action<float> OnNextWaveEvent { get; set; }
+
+        private void OnEnable()
+        {
+            UIManager.OnDefenderDropEvent += OnDefenderDrop;
+            UIManager.OnPlayButtonClickedEvent += StartWave;
+        }
+
+        private void OnDisable()
+        {
+            UIManager.OnDefenderDropEvent -= OnDefenderDrop;
+            UIManager.OnPlayButtonClickedEvent -= StartWave;
+        }
+
         private void Start()
+        {
+            Initialize();
+        }
+
+        private void Initialize()
         {
             Pathfinder = new AStarPathfinder();
             _blockers = new List<Node>();
@@ -47,37 +75,11 @@ namespace TowerDefense.PathFinding
             }
             
             CreatePath();
+            _waveList = WaveCollection.Service.GetWaveByDifficulty(Difficulty.Easy);
         }
 
         private void LateUpdate()
         {
-            RaycastHit2D? hit = GetFocusedOnTile();
-
-            if (hit.HasValue)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Node hitNode = hit.Value.collider.gameObject.GetComponent<Node>();
-                    if (!_blockers.Exists(x => x == hitNode))
-                    {
-                        hitNode.isWalkable = false;
-                        if (FindPath())
-                        {
-                            hitNode.ShowNode(Color.blue);
-                            _blockers.Add(hitNode);
-                            CreatePath();
-                        }
-                        else
-                        {
-                            hitNode.HideNode();
-                            hitNode.isWalkable = true;
-                            CreatePath();
-                            Debug.LogError("No Path Found!");
-                        }
-                    }
-                }
-            }
-
             if (Input.GetKeyDown(KeyCode.Space) && _blockers.Count > 0)
             {
                 foreach (Node blocker in _blockers)
@@ -90,16 +92,58 @@ namespace TowerDefense.PathFinding
                 CreatePath();
             }
 
+            if (Input.GetMouseButtonDown(0))
+            {
+                OnPlayerTouchFieldEvent?.Invoke();
+                RaycastHit2D? hit = GetFocusedOnTileByLayer(_defenderLayerMask);
+                if (hit.HasValue)
+                {
+                    Debug.Log($"#{GetType().Name}# OnPlayerTouchFieldEvent: {hit.Value.transform.name}");
+                    if (hit.Value.transform.TryGetComponent(out ShooterController shooter))
+                        shooter.ShowRadiusIndicator(true);
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.S))
             {
                 StartWave();
             }
         }
 
-        private void StartWave()
+        private void OnDefenderDrop()
         {
-            List<Wave> waveList = WaveCollection.Service.GetWaveByLevel(WaveLevel.Level1);
-            StartCoroutine(StartWaveRoutine(waveList[_waveCount]));
+            RaycastHit2D? hit = GetFocusedOnTile();
+            if (hit.HasValue)
+            {
+                Node hitNode = hit.Value.collider.gameObject.GetComponent<Node>();
+                if (!_blockers.Exists(x => x == hitNode))
+                {
+                    hitNode.isWalkable = false;
+                    if (FindPath())
+                    {
+                        hitNode.ShowNode(Color.blue);
+                        Instantiate(_shooterController, hitNode.transform.position, Quaternion.identity, _defenderHolder);
+                        _blockers.Add(hitNode);
+                        CreatePath();
+                    }
+                    else
+                    {
+                        hitNode.HideNode();
+                        hitNode.isWalkable = true;
+                        CreatePath();
+                        Debug.LogError("No Path Found!");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Can't drop defender on that location!");
+                }
+            }
+        }
+
+        public void StartWave()
+        {
+            StartCoroutine(StartWaveRoutine(_waveList[_waveCount]));
         }
 
         private IEnumerator StartWaveRoutine(Wave wave)
@@ -125,10 +169,19 @@ namespace TowerDefense.PathFinding
             yield return new WaitUntil(() => _runnerWaveList.Count == 0);
             Debug.Log($"#{GetType().Name}# All Runners -> Reached Target");
 
+            OnNextWaveEvent?.Invoke(wave.TimeInterval);
             yield return new WaitForSeconds(wave.TimeInterval);
             Debug.Log($"#{GetType().Name}# Wave -> Next Wave");
             
             _waveCount++;
+            if (_waveList.Count == _waveCount)
+            {
+                Debug.Log($"#{GetType().Name}# Game Finished!");
+            }
+            else
+            {
+                StartWave();
+            }
         }
 
         private void RemoveRunnerFromWaveList(GameObject obj)
@@ -177,13 +230,13 @@ namespace TowerDefense.PathFinding
                     if (_mapManager.map.TryGetValue(topBorderVector, out Node topBorderNode))
                     {
                         topBorderNode.isWalkable = false;
-                        topBorderNode.ShowNode(Color.yellow);
+                        _blockers.Add(topBorderNode);
                     }
                     
                     if (_mapManager.map.TryGetValue(rightBorderVector, out Node rightBorderNode) && rightBorderVector != _targetCell)
                     {
                         rightBorderNode.isWalkable = false;
-                        rightBorderNode.ShowNode(Color.yellow);
+                        _blockers.Add(rightBorderNode);
                     }
                 }
 
@@ -194,13 +247,13 @@ namespace TowerDefense.PathFinding
                     if (_mapManager.map.TryGetValue(bottomBorderVector, out Node borderNode))
                     {
                         borderNode.isWalkable = false;
-                        borderNode.ShowNode(Color.yellow);
+                        _blockers.Add(borderNode);
                     }
                     
                     if (_mapManager.map.TryGetValue(rightBorderVector, out Node rightBorderNode) && rightBorderVector != _targetCell)
                     {
                         rightBorderNode.isWalkable = false;
-                        rightBorderNode.ShowNode(Color.yellow);
+                        _blockers.Add(rightBorderNode);
                     }
                 }
             }
@@ -215,13 +268,13 @@ namespace TowerDefense.PathFinding
                     if (_mapManager.map.TryGetValue(topBorderVector, out Node topBorderNode))
                     {
                         topBorderNode.isWalkable = false;
-                        topBorderNode.ShowNode(Color.yellow);
+                        _blockers.Add(topBorderNode);
                     }
                     
                     if (_mapManager.map.TryGetValue(leftBorderVector, out Node leftBorderNode) && leftBorderVector != _startCell)
                     {
                         leftBorderNode.isWalkable = false;
-                        leftBorderNode.ShowNode(Color.yellow);
+                        _blockers.Add(leftBorderNode);
                     }
                 }
 
@@ -232,13 +285,13 @@ namespace TowerDefense.PathFinding
                     if (_mapManager.map.TryGetValue(bottomBorderVector, out Node borderNode))
                     {
                         borderNode.isWalkable = false;
-                        borderNode.ShowNode(Color.yellow);
+                        _blockers.Add(borderNode);
                     }
                     
                     if (_mapManager.map.TryGetValue(leftBorderVector, out Node leftBorderNode) && leftBorderVector != _startCell)
                     {
                         leftBorderNode.isWalkable = false;
-                        leftBorderNode.ShowNode(Color.yellow);
+                        _blockers.Add(leftBorderNode);
                     }
                 }
             }
@@ -268,6 +321,21 @@ namespace TowerDefense.PathFinding
             if (hits.Length > 0)
             {
                 return hits.OrderByDescending(i => i.collider.transform.position.z).First();
+            }
+
+            return null;
+        }
+
+        private RaycastHit2D? GetFocusedOnTileByLayer(LayerMask layer)
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+
+            RaycastHit2D hits = Physics2D.Raycast(mousePos2D, Vector2.zero, 100f , layer);
+
+            if (hits.transform != null)
+            {
+                return hits;
             }
 
             return null;

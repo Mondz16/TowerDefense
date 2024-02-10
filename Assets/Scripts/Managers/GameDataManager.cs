@@ -1,4 +1,5 @@
-﻿using Manic.Services;
+﻿using System;
+using Manic.Services;
 using UnityEngine;
 
 namespace TowerDefense.Manager
@@ -17,21 +18,21 @@ namespace TowerDefense.Manager
         }
 
         private static GameDataManager _;
-        public int PlayerHealth => _playerhealth;
-        
+
+        public static Action<int> OnPlayerHealthUpdatedEvent { get; set; }
+
         [SerializeField]
         private int _playerhealth;
 
         public void DamagePlayer()
         {
-            if (_playerhealth > 1)
+            _playerhealth -= 1;
+            OnPlayerHealthUpdatedEvent?.Invoke(_playerhealth);
+            
+            if (_playerhealth - 1 <= 0)
             {
-                _playerhealth--;
-                Debug.Log($"#{GetType().Name}# DamagePlayer -> damage received");
-            }
-            else
-            {
-                Debug.Log($"#{GetType().Name}# DamagePlayer -> player is dead");
+                Debug.Log($"#{GetType().Name}# Player is Dead!");
+                return;
             }
         }
     }

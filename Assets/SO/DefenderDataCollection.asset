@@ -12,4 +12,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 502921e5888f9814b9703a093d19aa37, type: 3}
   m_Name: DefenderDataCollection
   m_EditorClassIdentifier: 
-  _defenderDataList: []
+  _defenderDataList:
+  - ID: 0
+    DefenderName: Water Squasher
+    Health: 0
+    Damage: 1
+    Range: 1
+    AttackSpeed: 0.2
+    BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
+  - ID: 1
+    DefenderName: Pineapple Barrage
+    Health: 0
+    Damage: 1
+    Range: 2
+    AttackSpeed: 3
+    BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
+  - ID: 2
+    DefenderName: Tomato Squeze
+    Health: 0
+    Damage: 2
+    Range: 1
+    AttackSpeed: 5
+    BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
+  - ID: 3
+    DefenderName: Carrot Fighter
+    Health: 0
+    Damage: 2
+    Range: 3
+    AttackSpeed: 3
+    BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
+  - ID: 4
+    DefenderName: Pumpkin Style
+    Health: 0
+    Damage: 2
+    Range: 2
+    AttackSpeed: 2
+    BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}

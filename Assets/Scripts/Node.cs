@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace TowerDefense.PathFinding
 {
@@ -15,6 +16,10 @@ namespace TowerDefense.PathFinding
         public int fCost => gCost + hCost;
         public Vector2Int gridLocation;
 
+        private bool _isShowingIndicator = false;
+        private float _timeBeforeNormalColor = 0f;
+        private Color _normalColor;
+
         public Node(int x, int y, bool isWalkable)
         {
             this.x = x;
@@ -22,10 +27,39 @@ namespace TowerDefense.PathFinding
             this.isWalkable = isWalkable;
         }
 
+        private void Start()
+        {
+            _normalColor = _sprite.color;
+        }
+
+        private void Update()
+        {
+            if (_isShowingIndicator)
+            {
+                if (_timeBeforeNormalColor > 0)
+                {
+                    Color highlightColor = new Color(_sprite.color.r, _sprite.color.g, _sprite.color.b, .2f);
+                    _sprite.color = highlightColor;
+                    _timeBeforeNormalColor -= Time.deltaTime;
+                }
+                else
+                {
+                    _sprite.color = _normalColor;
+                    _timeBeforeNormalColor = 0;
+                    _isShowingIndicator = false;
+                }
+            }
+        }
+
+        public void ShowHighlightIndicator()
+        {
+            _timeBeforeNormalColor = .1f;
+            _isShowingIndicator = true;
+        }
+
         public void ShowNode(Color color)
         {
             _sprite.color = color;
-            Debug.Log($"#{GetType().Name}# ShowNode Color -> {color}");
         }
 
         public void HideNode()

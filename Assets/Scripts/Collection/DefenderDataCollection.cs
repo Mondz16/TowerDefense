@@ -35,9 +35,10 @@ namespace TowerDefense.Collection
         public DefenderID ID;
         public string DefenderName;
         public int Health;
-        public float Damage;
+        public int Damage;
         public float Range;
         public float AttackSpeed;
+        public BulletController BulletPrefab;
     }
 
     public enum DefenderID

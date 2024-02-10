@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Manic.Services;
+using TowerDefense.PathFinding;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace TowerDefense.Collection
@@ -38,6 +40,16 @@ namespace TowerDefense.Collection
         public float Speed;
         public string Description;
         public GameObject Prefab;
+
+        public RunnerData(RunnerData runnerData)
+        {
+            ID = runnerData.ID;
+            RunnerName = runnerData.RunnerName;
+            Health = runnerData.Health;
+            Speed = runnerData.Speed;
+            Description = runnerData.Description;
+            Prefab = runnerData.Prefab;
+        }
     }
 
     public enum RunnerID

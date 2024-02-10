@@ -23,7 +23,7 @@ namespace TowerDefense.PathFinding
 
         public void SetRunnerData(RunnerData runnerData)
         {
-            _runnerData = runnerData;
+            _runnerData = new RunnerData(runnerData);
         }
         
         private void LateUpdate()
@@ -35,9 +35,9 @@ namespace TowerDefense.PathFinding
             else
             {
                 Debug.Log($"#{GetType().Name}# Runner -> Reached Target!");
+                _gameDataManager.DamagePlayer();
                 OnRunnerDisappear?.Invoke(gameObject);
                 _poolManager.ReturnObject(gameObject);
-                _gameDataManager.DamagePlayer();
             }
         }
         
@@ -55,6 +55,18 @@ namespace TowerDefense.PathFinding
         public void AddPath(List<Node> path)
         {
             _path = new List<Node>(path);
+        }
+
+        public void TakeDamage(int damage)
+        {
+            _runnerData.Health -= damage;
+            
+            if (_runnerData.Health - 1 <= 0)
+            {
+                OnRunnerDisappear?.Invoke(gameObject);
+                _poolManager.ReturnObject(gameObject);
+                return;
+            }
         }
     }
 }

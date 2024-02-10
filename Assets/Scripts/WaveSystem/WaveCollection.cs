@@ -24,9 +24,9 @@ namespace TowerDefense.WaveSystem
         
         [SerializeField] private List<WaveVariation> _waveList;
 
-        public List<Wave> GetWaveByLevel(WaveLevel level)
+        public List<Wave> GetWaveByDifficulty(Difficulty difficulty)
         {
-            return _waveList.Find(x => x.Level == level).LevelWaveList;
+            return _waveList.Find(x => x.Difficulty == difficulty).LevelWaveList;
         }
 
         public List<WaveVariation> GetWaveVariation()
@@ -38,12 +38,12 @@ namespace TowerDefense.WaveSystem
     [Serializable]
     public class WaveVariation
     {
-        public WaveLevel Level;
+        public Difficulty Difficulty;
         public List<Wave> LevelWaveList;
     }
 
-    public enum WaveLevel
+    public enum Difficulty
     {
-        Level1, Level2,Level3,Level4,Level5
+        Easy, Normal, Hard, Extreme
     }
 }

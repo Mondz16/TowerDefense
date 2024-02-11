@@ -63,11 +63,16 @@ public class ShooterController : MonoBehaviour
     {
         if (Physics2D.OverlapCircle(transform.position , _defenderData.Range, _runnerLayerMask))
         {
-            Collider2D collider = Physics2D.OverlapCircle(transform.position, _defenderData.Range, _runnerLayerMask);
-            Vector2 difference = collider.transform.position - transform.position;
-            float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ - 90);
-            return true;
+            Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, _defenderData.Range, _runnerLayerMask);
+
+            if (collider.Length > 0)
+            {
+                Vector2 difference = collider[0].transform.position - transform.position;
+                float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+                Quaternion rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ - 90);
+                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 1f);
+                return true;
+            }
         }
 
         return false;

@@ -21,6 +21,12 @@ public class BulletController : MonoBehaviour
     public void SetBulletDamage(int damage)
     {
         _damage = damage;
+        
+        Delay.RunLater(this, 1f, () =>
+        {
+            if(gameObject.activeInHierarchy)
+                _poolManager.ReturnObject(gameObject);
+        });
     }
 
     private void OnTriggerEnter2D(Collider2D other)

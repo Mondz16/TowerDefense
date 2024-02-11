@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: EasyWave2
   m_EditorClassIdentifier: 
   _difficulty: 0
-  _timeInterval: 3
+  _timeInterval: 5
   _waveAttributeList:
+  - RunnerID: 0
+    EnemyCount: 10
+  - RunnerID: 1
+    EnemyCount: 5
   - RunnerID: 0
     EnemyCount: 10
   - RunnerID: 1

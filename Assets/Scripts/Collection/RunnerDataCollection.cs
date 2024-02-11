@@ -38,6 +38,7 @@ namespace TowerDefense.Collection
         public string RunnerName;
         public int Health;
         public float Speed;
+        public int CoinReward;
         public string Description;
         public GameObject Prefab;
 
@@ -47,6 +48,7 @@ namespace TowerDefense.Collection
             RunnerName = runnerData.RunnerName;
             Health = runnerData.Health;
             Speed = runnerData.Speed;
+            CoinReward = runnerData.CoinReward;
             Description = runnerData.Description;
             Prefab = runnerData.Prefab;
         }

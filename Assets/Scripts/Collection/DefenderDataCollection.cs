@@ -36,8 +36,10 @@ namespace TowerDefense.Collection
         public string DefenderName;
         public int Health;
         public int Damage;
+        public int Cost;
         public float Range;
         public float AttackSpeed;
+        public ShooterController DefenderController;
         public BulletController BulletPrefab;
     }
 

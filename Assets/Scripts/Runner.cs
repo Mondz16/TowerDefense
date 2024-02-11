@@ -63,9 +63,9 @@ namespace TowerDefense.PathFinding
             
             if (_runnerData.Health - 1 <= 0)
             {
+                _gameDataManager.OnGainCoins(_runnerData.CoinReward);
                 OnRunnerDisappear?.Invoke(gameObject);
                 _poolManager.ReturnObject(gameObject);
-                return;
             }
         }
     }

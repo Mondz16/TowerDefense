@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: EasyWave1
   m_EditorClassIdentifier: 
   _difficulty: 0
-  _timeInterval: 3
+  _timeInterval: 5
   _waveAttributeList:
-  - Runner: {fileID: 5336693850007458299, guid: df16049a793a05e4e81f38ac2f6a652f, type: 3}
+  - RunnerID: 0
+    EnemyCount: 20
+  - RunnerID: 1
     EnemyCount: 10

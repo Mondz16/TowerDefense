@@ -1,19 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TowerDefense.Collection;
 using TowerDefense.PathFinding;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DefenderDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
+    [SerializeField] private DefenderID _defenderID;
     [SerializeField] private Canvas _canvas;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private RectTransform _rectTransform;
+    [SerializeField] private GameObject _cover;
 
     private bool _isDragging = false;
     private UIManager _uiManager;
-
+    private DefenderDataCollection _defenderDataCollection => DefenderDataCollection.Service;
+    
     public void InjectUIManager(UIManager uiManager)
     {
         _uiManager = uiManager;
@@ -34,6 +38,12 @@ public class DefenderDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
                 }
             }
         }
+    }
+
+    public void UpdateDefenderState(int coins)
+    {
+        int defenderCost = _defenderDataCollection.GetDefenderDataByID(_defenderID).Cost;
+        _cover.SetActive(coins < defenderCost);
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -63,7 +73,7 @@ public class DefenderDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         {
             if (hit.transform.TryGetComponent(out Node node))
             {
-                _uiManager.OnDefenderDropEventTriggered();
+                _uiManager.OnDefenderDropEventTriggered(_defenderID);
             }
         }
         

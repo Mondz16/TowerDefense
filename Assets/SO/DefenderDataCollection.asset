@@ -17,34 +17,44 @@ MonoBehaviour:
     DefenderName: Water Squasher
     Health: 0
     Damage: 1
+    Cost: 10
     Range: 1
     AttackSpeed: 0.2
+    DefenderController: {fileID: 7672270588235114929, guid: 8dec29a1144d92a448f9a6a89d0aa537, type: 3}
     BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
   - ID: 1
     DefenderName: Pineapple Barrage
     Health: 0
     Damage: 1
+    Cost: 20
     Range: 2
     AttackSpeed: 3
+    DefenderController: {fileID: 0}
     BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
   - ID: 2
     DefenderName: Tomato Squeze
     Health: 0
     Damage: 2
+    Cost: 20
     Range: 1
     AttackSpeed: 5
+    DefenderController: {fileID: 0}
     BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
   - ID: 3
     DefenderName: Carrot Fighter
     Health: 0
     Damage: 2
+    Cost: 30
     Range: 3
-    AttackSpeed: 3
-    BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
+    AttackSpeed: 0.1
+    DefenderController: {fileID: 7672270588235114929, guid: cf835b5f31321674a895db42a2d1ca84, type: 3}
+    BulletPrefab: {fileID: 5240566453584682244, guid: 5a856cb5fe4176e4aa7cc8a75f02b332, type: 3}
   - ID: 4
     DefenderName: Pumpkin Style
     Health: 0
     Damage: 2
+    Cost: 40
     Range: 2
-    AttackSpeed: 2
-    BulletPrefab: {fileID: 5240566453584682244, guid: 0350190ebc02d7e4988463e8d40320cd, type: 3}
+    AttackSpeed: 0.1
+    DefenderController: {fileID: 7672270588235114929, guid: dba4cca139f17d94585b8d989b78b8b4, type: 3}
+    BulletPrefab: {fileID: 5240566453584682244, guid: 46f7ae067ed34d64fbbe6185a4a6c8fd, type: 3}

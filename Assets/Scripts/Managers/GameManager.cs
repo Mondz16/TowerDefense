@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TowerDefense.Collection;
+using TowerDefense.Manager;
 using TowerDefense.WaveSystem;
 using Unity.Mathematics;
 using UnityEngine;
@@ -13,7 +14,9 @@ namespace TowerDefense.PathFinding
     {
         private MapManager _mapManager => MapManager.Service;
         private PoolManager _poolManager => PoolManager.Service;
+        private GameDataManager _gameDataManager => GameDataManager.Service;
         private RunnerDataCollection _runnerDataCollection => RunnerDataCollection.Service;
+        private DefenderDataCollection _defenderDataCollection => DefenderDataCollection.Service;
         
         [SerializeField] private Vector2Int _startCell;
         [SerializeField] private Vector2Int _targetCell;
@@ -27,10 +30,10 @@ namespace TowerDefense.PathFinding
         [Header("Player Input")]
         [SerializeField] private LayerMask _defenderLayerMask;
         [SerializeField] private Transform _defenderHolder;
-        [SerializeField] private ShooterController _shooterController;
 
-        [Header("Debug")] [SerializeField] [ReadOnly]
-        private int _currentLevel = 1;
+        [Header("Debug")]
+        [SerializeField] [ReadOnly]private int _currentLevel = 1;
+        [SerializeField][ReadOnly] private int _waveCount = 0;
         [SerializeField][ReadOnly] private List<Wave> _waveList;
         
         [SerializeField] private List<Node> _path;
@@ -38,22 +41,24 @@ namespace TowerDefense.PathFinding
         private List<Node> _blockers;
         private Node _startNode;
         private Node _targetNode;
-        private int _waveCount = 0;
         private AStarPathfinder Pathfinder;
 
         public static Action OnPlayerTouchFieldEvent { get; set; }
-        public static Action<float> OnNextWaveEvent { get; set; }
+        public static Action OnWaveCompletedEvent { get; set; }
+        public static Action<float, int> OnNextWaveEvent { get; set; }
 
         private void OnEnable()
         {
             UIManager.OnDefenderDropEvent += OnDefenderDrop;
-            UIManager.OnPlayButtonClickedEvent += StartWave;
+            UIManager.OnPlayButtonClickedEvent += RestartWave;
+            UIManager.OnRestartButtonClickedEvent += RestartWave;
         }
 
         private void OnDisable()
         {
             UIManager.OnDefenderDropEvent -= OnDefenderDrop;
-            UIManager.OnPlayButtonClickedEvent -= StartWave;
+            UIManager.OnPlayButtonClickedEvent -= RestartWave;
+            UIManager.OnRestartButtonClickedEvent -= RestartWave;
         }
 
         private void Start()
@@ -110,7 +115,7 @@ namespace TowerDefense.PathFinding
             }
         }
 
-        private void OnDefenderDrop()
+        private void OnDefenderDrop(DefenderID defenderID)
         {
             RaycastHit2D? hit = GetFocusedOnTile();
             if (hit.HasValue)
@@ -122,7 +127,12 @@ namespace TowerDefense.PathFinding
                     if (FindPath())
                     {
                         hitNode.ShowNode(Color.blue);
-                        Instantiate(_shooterController, hitNode.transform.position, Quaternion.identity, _defenderHolder);
+                        
+                        var data = _defenderDataCollection.GetDefenderDataByID(defenderID);
+                        Instantiate(data.DefenderController, hitNode.transform.position, Quaternion.identity, _defenderHolder);
+                        
+                        _gameDataManager.OnPurchaseDefender(data.Cost);
+                        
                         _blockers.Add(hitNode);
                         CreatePath();
                     }
@@ -139,6 +149,12 @@ namespace TowerDefense.PathFinding
                     Debug.LogError("Can't drop defender on that location!");
                 }
             }
+        }
+        
+        public void RestartWave()
+        {
+            _waveCount = 0;
+            StartWave();
         }
 
         public void StartWave()
@@ -168,18 +184,19 @@ namespace TowerDefense.PathFinding
 
             yield return new WaitUntil(() => _runnerWaveList.Count == 0);
             Debug.Log($"#{GetType().Name}# All Runners -> Reached Target");
-
-            OnNextWaveEvent?.Invoke(wave.TimeInterval);
-            yield return new WaitForSeconds(wave.TimeInterval);
-            Debug.Log($"#{GetType().Name}# Wave -> Next Wave");
             
             _waveCount++;
+            
             if (_waveList.Count == _waveCount)
             {
+                OnWaveCompletedEvent?.Invoke();
                 Debug.Log($"#{GetType().Name}# Game Finished!");
             }
             else
             {
+                Debug.Log($"#{GetType().Name}# Wave -> Next Wave");
+                OnNextWaveEvent?.Invoke(wave.TimeInterval, _waveCount);
+                yield return new WaitForSeconds(wave.TimeInterval);
                 StartWave();
             }
         }

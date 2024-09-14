@@ -99,10 +99,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b481d8c2687210443b88071e497a075b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bulletSprite: {fileID: 7457923087814187561}
   _bulletSpeed: 10
   _runnerLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  _bulletHitEffectPrefab: {fileID: 8983954291641269493, guid: d53070851e68fe547ad9e55ce3845222, type: 3}
 --- !u!58 &8538767215266445969
 CircleCollider2D:
   m_ObjectHideFlags: 0

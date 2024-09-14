@@ -28,6 +28,8 @@ namespace TowerDefense.PathFinding
         
         private void LateUpdate()
         {
+            if (GameDataManager.Service.IsPlayerDead) return;
+            
             if (_path.Count > 0)
             {
                 MoveAlongPath();

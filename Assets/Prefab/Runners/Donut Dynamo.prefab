@@ -103,8 +103,10 @@ MonoBehaviour:
     RunnerName: 
     Health: 0
     Speed: 0
+    CoinReward: 0
     Description: 
     Prefab: {fileID: 0}
+    RunnerVisual: {fileID: 0}
   _path:
   - {fileID: 0}
   - {fileID: 0}

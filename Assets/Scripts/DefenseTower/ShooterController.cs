@@ -6,13 +6,20 @@ using UnityEngine;
 
 public class ShooterController : MonoBehaviour
 {
+    public int CurrentLevel => _level;
+    public DefenderStats DefenderStats => _defenderStats;
+    public DefenderData DefenderData => _defenderData;
+    
     [SerializeField]private DefenderID _defenderID;
+    [SerializeField]private SpriteRenderer _defenderSpriteRenderer;
     [SerializeField] private Transform _firePosition;
     [SerializeField] private SpriteRenderer _radiusIndicatorRenderer;
     [SerializeField] private LayerMask _runnerLayerMask;
-    [SerializeField][ReadOnly] private DefenderData _defenderData;
+    [SerializeField][ReadOnly] private DefenderStats _defenderStats;
 
     private float _timeBeforeShoot = 0;
+    private int _level = 1;
+    private DefenderData _defenderData;
     
     private DefenderDataCollection _defenderDataCollection => DefenderDataCollection.Service;
     private PoolManager _poolManager => PoolManager.Service;
@@ -37,8 +44,7 @@ public class ShooterController : MonoBehaviour
     {
         // sets the data of the defender
         _defenderData = _defenderDataCollection.GetDefenderDataByID(_defenderID);
-        
-        _radiusIndicatorRenderer.transform.localScale = transform.localScale + ((Vector3.one * _defenderData.Range) + (Vector3.one * .7f));
+        UpdateDefenderStatsAndVisuals(_defenderID, _level);
     }
 
     // Update is called once per frame
@@ -50,8 +56,19 @@ public class ShooterController : MonoBehaviour
         }
     }
 
+    public void UpdateDefenderStatsAndVisuals(DefenderID id, int level)
+    {
+        _defenderStats = _defenderDataCollection.GetDefenderStatsByLevel(id, level);
+
+        // update defender visuals
+        _defenderSpriteRenderer.sprite = _defenderStats.DefenderSprite;
+        _radiusIndicatorRenderer.transform.localScale = transform.localScale + ((Vector3.one * _defenderStats.Range) + (Vector3.one * .7f));
+    }
+
     public void ShowRadiusIndicator(bool show)
     {
+        if (!_radiusIndicatorRenderer) return;
+        
         if(!_radiusIndicatorRenderer.gameObject.activeInHierarchy)
             _radiusIndicatorRenderer.gameObject.SetActive(show);
         
@@ -59,11 +76,24 @@ public class ShooterController : MonoBehaviour
             _radiusIndicatorRenderer.gameObject.SetActive(show);
     }
 
+    public void OnUpgradeDefender()
+    {
+        _level++;
+        Debug.Log($"#{GetType().Name}# Upgrade Defender | New Level : {_level}");
+        UpdateDefenderStatsAndVisuals(_defenderID, _level);
+    }
+
+    public void OnSellDefender()
+    {
+        ShowRadiusIndicator(false);
+        Destroy(gameObject);
+    }
+
     private bool OnDefenderAim()
     {
-        if (Physics2D.OverlapCircle(transform.position , _defenderData.Range, _runnerLayerMask))
+        if (Physics2D.OverlapCircle(transform.position , _defenderStats.Range, _runnerLayerMask))
         {
-            Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, _defenderData.Range, _runnerLayerMask);
+            Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, _defenderStats.Range, _runnerLayerMask);
 
             if (collider.Length > 0)
             {
@@ -83,7 +113,7 @@ public class ShooterController : MonoBehaviour
         if (_timeBeforeShoot <= 0)
         {
             SpawnBullet();
-            _timeBeforeShoot = _defenderData.AttackSpeed;
+            _timeBeforeShoot = _defenderStats.AttackSpeed;
         }
         else
             _timeBeforeShoot -= Time.deltaTime;
@@ -92,7 +122,9 @@ public class ShooterController : MonoBehaviour
     private void SpawnBullet()
     {
         GameObject obj = _poolManager.UseObject(_defenderData.BulletPrefab.gameObject, _firePosition.position, transform.rotation);
-        obj.GetComponent<BulletController>().SetBulletDamage(_defenderData.Damage);
+        var bulletController = obj.GetComponent<BulletController>();
+        bulletController.SetBulletVisual(_defenderStats.BulletSprite);
+        bulletController.SetBulletDamage(_defenderStats.Damage);
     }
 
     private void OnDrawGizmos()

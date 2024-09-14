@@ -19,16 +19,22 @@ namespace TowerDefense.Manager
 
         private static GameDataManager _;
 
+        public int PlayerCoins => _playerCoins;
+        public bool IsPlayerDead => _isPlayerDead;
+        
+        public static Action OnPlayerDiedEvent { get; set; }
         public static Action<int> OnPlayerHealthUpdatedEvent { get; set; }
         public static Action<int> OnPlayerCoinsUpdatedEvent { get; set; }
         
         [SerializeField]
         private int _playerhealth;
         private int _playerCoins;
+        private bool _isPlayerDead = false;
 
         private void Start()
         {
-            OnGainCoins(10);
+            _isPlayerDead = false;
+            OnGainCoins(200);
         }
 
         public void OnGainCoins(int reward)
@@ -37,7 +43,7 @@ namespace TowerDefense.Manager
             OnPlayerCoinsUpdatedEvent?.Invoke(_playerCoins);
         }
         
-        public void OnPurchaseDefender(int cost)
+        public void OnPurchase(int cost)
         {
             if (_playerCoins == 0) return;
             
@@ -50,8 +56,10 @@ namespace TowerDefense.Manager
             _playerhealth -= 1;
             OnPlayerHealthUpdatedEvent?.Invoke(_playerhealth);
             
-            if (_playerhealth - 1 <= 0)
+            if (_playerhealth <= 0)
             {
+                _isPlayerDead = true;
+                OnPlayerDiedEvent?.Invoke();
                 Debug.Log($"#{GetType().Name}# Player is Dead!");
                 return;
             }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TowerDefense.Collection;
+using TowerDefense.Manager;
 using TowerDefense.PathFinding;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -42,7 +43,7 @@ public class DefenderDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void UpdateDefenderState(int coins)
     {
-        int defenderCost = _defenderDataCollection.GetDefenderDataByID(_defenderID).Cost;
+        int defenderCost = _defenderDataCollection.GetDefenderStatsByLevel(_defenderID, 1).Cost;
         _cover.SetActive(coins < defenderCost);
     }
 

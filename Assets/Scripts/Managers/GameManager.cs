@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ManicStarterPack.Utilties;
 using TowerDefense.Collection;
 using TowerDefense.Manager;
 using TowerDefense.WaveSystem;
@@ -38,27 +39,39 @@ namespace TowerDefense.PathFinding
         
         [SerializeField] private List<Node> _path;
         [SerializeField] private List<GameObject> _runnerWaveList;
-        private List<Node> _blockers;
+
+        [SerializeField] private ShooterController _selectedDefender;
+        
+        [SerializeField] private List<Node> _blockers;
         private Node _startNode;
         private Node _targetNode;
         private AStarPathfinder Pathfinder;
 
+        public static Action<RunnerID> OnSpawnRunnerEvent { get; set; }
         public static Action OnPlayerTouchFieldEvent { get; set; }
         public static Action OnWaveCompletedEvent { get; set; }
+        public static Action<Wave> OnStartWaveEvent { get; set; }
         public static Action<float, int> OnNextWaveEvent { get; set; }
+        public static Action<Vector3 , bool> OnShowDefenderStatsEvent { get; set; }
 
         private void OnEnable()
         {
+            GameDataManager.OnPlayerDiedEvent += OnGameOver;
             UIManager.OnDefenderDropEvent += OnDefenderDrop;
             UIManager.OnPlayButtonClickedEvent += RestartWave;
             UIManager.OnRestartButtonClickedEvent += RestartWave;
+            UIManager.OnUpgradeDefenderEvent += OnUpgradeDefender;
+            UIManager.OnSellDefenderEvent += OnSellDefender;
         }
 
         private void OnDisable()
         {
+            GameDataManager.OnPlayerDiedEvent -= OnGameOver;
             UIManager.OnDefenderDropEvent -= OnDefenderDrop;
             UIManager.OnPlayButtonClickedEvent -= RestartWave;
             UIManager.OnRestartButtonClickedEvent -= RestartWave;
+            UIManager.OnUpgradeDefenderEvent -= OnUpgradeDefender;
+            UIManager.OnSellDefenderEvent -= OnSellDefender;
         }
 
         private void Start()
@@ -99,19 +112,76 @@ namespace TowerDefense.PathFinding
 
             if (Input.GetMouseButtonDown(0))
             {
-                OnPlayerTouchFieldEvent?.Invoke();
+                if (!Helper.isOverUI())
+                {
+                    _selectedDefender = null;
+                    OnPlayerTouchFieldEvent?.Invoke();
+                }
+
                 RaycastHit2D? hit = GetFocusedOnTileByLayer(_defenderLayerMask);
                 if (hit.HasValue)
                 {
                     Debug.Log($"#{GetType().Name}# OnPlayerTouchFieldEvent: {hit.Value.transform.name}");
                     if (hit.Value.transform.TryGetComponent(out ShooterController shooter))
+                    {
+                        _selectedDefender = shooter;
                         shooter.ShowRadiusIndicator(true);
+                        
+                        if (shooter.DefenderData.DefenderStatsList.Exists(x => x.Level == (shooter.CurrentLevel + 1)))
+                        {
+                            var nextStats = shooter.DefenderData.DefenderStatsList.Find(x => x.Level == (shooter.CurrentLevel + 1));
+                            if (_gameDataManager.PlayerCoins >= nextStats.Cost)
+                            {
+                                OnShowDefenderStatsEvent?.Invoke(shooter.transform.position, true);
+                            }
+                            else
+                            {
+                                OnShowDefenderStatsEvent?.Invoke(shooter.transform.position, false);
+                            }
+                        }
+                        else
+                        {
+                            OnShowDefenderStatsEvent?.Invoke(shooter.transform.position, false);
+                        }
+                    }
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.S))
             {
                 StartWave();
+            }
+        }
+
+        private void OnGameOver()
+        {
+            Debug.Log($"#{GetType().Name}# Game Over - Stop Coroutine");
+            StopCoroutine(StartWaveRoutine(_waveList[_waveCount]));
+        }
+
+        private void OnUpgradeDefender()
+        {
+            if (_selectedDefender)
+            {
+                _selectedDefender.OnUpgradeDefender();
+                _gameDataManager.OnPurchase(_selectedDefender.DefenderStats.Cost);
+            }
+        }
+
+        private void OnSellDefender()
+        {
+            if (_selectedDefender)
+            {
+                Debug.Log($"#{GetType().Name}# Defender Pos {(Vector2)_selectedDefender.transform.position}");
+                var node = _blockers.Find(x => (Vector2) x.transform.position == (Vector2)_selectedDefender.transform.position);
+                Debug.Log($"#{GetType().Name}# Node: {node.nodeLocation}");
+                node.isWalkable = true;
+                _blockers.Remove(node);
+                
+                CreatePath();
+                _gameDataManager.OnGainCoins(_selectedDefender.DefenderStats.Cost / 2);
+                _selectedDefender.OnSellDefender();
+                _selectedDefender = null;
             }
         }
 
@@ -129,9 +199,10 @@ namespace TowerDefense.PathFinding
                         hitNode.ShowNode(Color.blue);
                         
                         var data = _defenderDataCollection.GetDefenderDataByID(defenderID);
+                        var stats = _defenderDataCollection.GetDefenderStatsByLevel(defenderID, 1);
                         Instantiate(data.DefenderController, hitNode.transform.position, Quaternion.identity, _defenderHolder);
                         
-                        _gameDataManager.OnPurchaseDefender(data.Cost);
+                        _gameDataManager.OnPurchase(stats.Cost);
                         
                         _blockers.Add(hitNode);
                         CreatePath();
@@ -159,6 +230,7 @@ namespace TowerDefense.PathFinding
 
         public void StartWave()
         {
+            OnStartWaveEvent?.Invoke(_waveList[_waveCount]);
             StartCoroutine(StartWaveRoutine(_waveList[_waveCount]));
         }
 
@@ -168,6 +240,7 @@ namespace TowerDefense.PathFinding
             {
                 for (int i = 0; i < attribute.EnemyCount; i++)
                 {
+                    OnSpawnRunnerEvent?.Invoke(attribute.RunnerID);
                     var runnerData = _runnerDataCollection.GetRunnerDataByID(attribute.RunnerID);
                     
                     var obj = _poolManager.UseObject(runnerData.Prefab, new Vector3(_startCell.x, _startCell.y, 0), Quaternion.identity);
@@ -195,6 +268,7 @@ namespace TowerDefense.PathFinding
             else
             {
                 Debug.Log($"#{GetType().Name}# Wave -> Next Wave");
+                _gameDataManager.OnGainCoins(wave.CoinWaveReward);
                 OnNextWaveEvent?.Invoke(wave.TimeInterval, _waveCount);
                 yield return new WaitForSeconds(wave.TimeInterval);
                 StartWave();
@@ -215,6 +289,7 @@ namespace TowerDefense.PathFinding
         }
 
         private void CreatePath(Runner runner = null)
+        
         {
             if (FindPath() && runner)
             {

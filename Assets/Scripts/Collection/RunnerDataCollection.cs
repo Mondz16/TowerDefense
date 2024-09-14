@@ -41,6 +41,7 @@ namespace TowerDefense.Collection
         public int CoinReward;
         public string Description;
         public GameObject Prefab;
+        public Sprite RunnerVisual;
 
         public RunnerData(RunnerData runnerData)
         {
@@ -56,6 +57,6 @@ namespace TowerDefense.Collection
 
     public enum RunnerID
     {
-        Hamburger, Fries , Pasta , IceCream, Donut , Pizza
+        Hamburger, Fries , PizzaPiece , Soda, Donut , Pizza
     }
 }

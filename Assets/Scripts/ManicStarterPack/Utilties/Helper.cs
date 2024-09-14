@@ -20,17 +20,17 @@ namespace ManicStarterPack.Utilties
         }
 
         private static Camera _camera;
-        
+
         private static PointerEventData _eventDataCurrentPosition;
         private static List<RaycastResult> _results;
-        
+
         /// <summary>
         /// Check if mouse pointer is over ui
         /// </summary>
         /// <returns></returns>
         public static bool isOverUI()
         {
-            _eventDataCurrentPosition = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+            _eventDataCurrentPosition = new PointerEventData(EventSystem.current) {position = Input.mousePosition};
             _results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(_eventDataCurrentPosition, _results);
             return _results.Count > 0;
@@ -47,7 +47,17 @@ namespace ManicStarterPack.Utilties
             return result;
         }
 
-        /// <summary>
+        public static Vector2 GetRectTransformOfWorldPosition(Vector3 pos, RectTransform CanvasRect)
+        {
+           var viewportPosition = Camera.main.WorldToViewportPoint(pos);
+           Vector2 WorldObject_ScreenPosition=new Vector2(
+               ((viewportPosition.x*CanvasRect.sizeDelta.x)-(CanvasRect.sizeDelta.x*0.5f)),
+               ((viewportPosition.y*CanvasRect.sizeDelta.y)-(CanvasRect.sizeDelta.y*0.5f)));
+
+           return WorldObject_ScreenPosition;
+        }
+
+    /// <summary>
         /// This method delete all the children of a Transform
         /// </summary>
         /// <param name="transform"></param>

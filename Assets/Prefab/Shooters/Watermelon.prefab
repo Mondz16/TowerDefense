@@ -47,7 +47,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1773975570651748687
 Transform:
   m_ObjectHideFlags: 0
@@ -249,21 +249,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defenderID: 0
+  _defenderSpriteRenderer: {fileID: 7672270587281590542}
   _firePosition: {fileID: 4082088942896619518}
   _radiusIndicatorRenderer: {fileID: 4776554117572227607}
   _runnerLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  _defenderData:
-    ID: 0
-    DefenderName: 
+  _defenderStats:
+    Level: 0
     Health: 0
     Damage: 0
     Cost: 0
     Range: 0
     AttackSpeed: 0
-    DefenderController: {fileID: 0}
-    BulletPrefab: {fileID: 0}
+    DefenderSprite: {fileID: 0}
+    BulletSprite: {fileID: 0}
 --- !u!212 &4583254650479827332
 SpriteRenderer:
   m_ObjectHideFlags: 0

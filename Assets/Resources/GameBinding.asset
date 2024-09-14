@@ -15,5 +15,5 @@ MonoBehaviour:
   _waveCollection: {fileID: 11400000, guid: 714cd6378b491e04080d40a067726228, type: 2}
   _defenderDataCollection: {fileID: 11400000, guid: 0f39d017e68c7814799fc31c3f360e1f, type: 2}
   _runnerDataCollection: {fileID: 11400000, guid: ab4487d812ebf5646a9488b9b90ac9d1, type: 2}
-  _gameSceneManager: {fileID: 8451928245543387241, guid: 237d9637799e4b0469ac1e35acfd4d84, type: 3}
+  _sceneLoaderManager: {fileID: 784135061073365893, guid: 09d8c0063b43a2c45b8169b49a31a9ee, type: 3}
   _gameDataManager: {fileID: 6261758590902589156, guid: 716af8df6b31ce04c80d5f2ece634fdb, type: 3}

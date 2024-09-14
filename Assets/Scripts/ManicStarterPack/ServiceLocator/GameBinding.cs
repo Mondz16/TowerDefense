@@ -16,10 +16,10 @@ namespace Manic.Services
         public RunnerDataCollection RunnerDataCollection => _runnerDataCollection;
         [SerializeField] private RunnerDataCollection _runnerDataCollection;
         
-        public GameSceneManager GameSceneManager => _gameSceneManager;
+        public SceneLoaderManager SceneLoaderManager => _sceneLoaderManager;
 
         [Header("Managers")]
-        [SerializeField] private GameSceneManager _gameSceneManager;
+        [SerializeField] private SceneLoaderManager _sceneLoaderManager;
         public GameDataManager GameDataManager => _gameDataManager;
         [SerializeField] private GameDataManager _gameDataManager;
     }

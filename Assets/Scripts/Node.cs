@@ -14,6 +14,7 @@ namespace TowerDefense.PathFinding
         public SpriteRenderer _sprite;
 
         public int fCost => gCost + hCost;
+        public Vector2 nodeLocation;
         public Vector2Int gridLocation;
 
         private bool _isShowingIndicator = false;
@@ -25,6 +26,7 @@ namespace TowerDefense.PathFinding
             this.x = x;
             this.y = y;
             this.isWalkable = isWalkable;
+            nodeLocation = new Vector2(x, y);
         }
 
         private void Start()

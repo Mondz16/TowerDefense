@@ -30,7 +30,7 @@ namespace Manic.Services
             GameObject servicesObject = new GameObject("Services");
             Object.DontDestroyOnLoad(servicesObject);
 
-            InitializeManager(servicesObject, binding.GameSceneManager);
+            InitializeManager(servicesObject, binding.SceneLoaderManager);
             InitializeManager(servicesObject, binding.GameDataManager);
         }
 

@@ -27,6 +27,12 @@ namespace TowerDefense.Collection
         {
             return _defenderDataList.Find(x => x.ID == id);
         }
+
+        public DefenderStats GetDefenderStatsByLevel(DefenderID id, int level)
+        {
+            var defenderData = GetDefenderDataByID(id);
+            return defenderData.DefenderStatsList.Find(x => x.Level == level);
+        }
     }
 
     [Serializable]
@@ -34,17 +40,26 @@ namespace TowerDefense.Collection
     {
         public DefenderID ID;
         public string DefenderName;
+        public List<DefenderStats> DefenderStatsList;
+        public ShooterController DefenderController;
+        public BulletController BulletPrefab;
+    }
+
+    [Serializable]
+    public class DefenderStats
+    {
+        public int Level;
         public int Health;
         public int Damage;
         public int Cost;
         public float Range;
         public float AttackSpeed;
-        public ShooterController DefenderController;
-        public BulletController BulletPrefab;
+        public Sprite DefenderSprite;
+        public Sprite BulletSprite;
     }
 
     public enum DefenderID
     {
-        Watermelon, Pineapple , Tomato , Carrot , Pumpkin 
+        Watermelon, Pineapple , Tomato , Carrot , Grape 
     }
 }

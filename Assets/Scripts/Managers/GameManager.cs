@@ -8,6 +8,7 @@ using TowerDefense.Manager;
 using TowerDefense.WaveSystem;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace TowerDefense.PathFinding
 {
@@ -225,7 +226,11 @@ namespace TowerDefense.PathFinding
         public void RestartWave()
         {
             _waveCount = 0;
-            StartWave();
+            OnNextWaveEvent?.Invoke(10, _waveCount);
+            Delay.RunLater(this, 10f, () =>
+            {
+                StartWave();
+            });
         }
 
         public void StartWave()
@@ -238,20 +243,36 @@ namespace TowerDefense.PathFinding
         {
             foreach (WaveAttribute attribute in wave.GetWaveAttributeList())
             {
-                for (int i = 0; i < attribute.EnemyCount; i++)
+                var totalEnemies = 0;
+                var runnerCountArray = new int[attribute.WaveRunners.Count];
+
+                // store enemy count
+                for (var i = 0; i < attribute.WaveRunners.Count; i++)
                 {
-                    OnSpawnRunnerEvent?.Invoke(attribute.RunnerID);
-                    var runnerData = _runnerDataCollection.GetRunnerDataByID(attribute.RunnerID);
+                    runnerCountArray[i] = attribute.WaveRunners[i].EnemyCount;
+                    totalEnemies += attribute.WaveRunners[i].EnemyCount;
+                }
+
+                for (int i = 0; i < totalEnemies; i++)
+                {
+                    var runnersCount = Random.Range(0, attribute.WaveRunners.Count);
+                    var waveRunner = attribute.WaveRunners[runnersCount];
                     
-                    var obj = _poolManager.UseObject(runnerData.Prefab, new Vector3(_startCell.x, _startCell.y, 0), Quaternion.identity);
+                    OnSpawnRunnerEvent?.Invoke(waveRunner.RunnerID);
+                    var runnerData = _runnerDataCollection.GetRunnerDataByID(waveRunner.RunnerID);
+
+                    var obj = _poolManager.UseObject(runnerData.Prefab, new Vector3(_startCell.x, _startCell.y, 0),
+                        Quaternion.identity);
                     _runnerWaveList.Add(obj);
-                    
+
                     var runner = obj.GetComponent<Runner>();
                     runner.OnRunnerDisappear += RemoveRunnerFromWaveList;
                     runner.SetRunnerData(runnerData);
                     CreatePath(runner);
-                    
-                    yield return new WaitForSeconds(1f - (runner.RunnerData.Speed / 100));
+
+                    runnerCountArray[runnersCount] -= 1;
+                    totalEnemies -= 1;
+                    yield return new WaitForSeconds(Random.Range(attribute.MinSpawnTime, attribute.MaxSpawnTime));
                 }
             }
 
@@ -268,8 +289,8 @@ namespace TowerDefense.PathFinding
             else
             {
                 Debug.Log($"#{GetType().Name}# Wave -> Next Wave");
-                _gameDataManager.OnGainCoins(wave.CoinWaveReward);
                 OnNextWaveEvent?.Invoke(wave.TimeInterval, _waveCount);
+                _gameDataManager.OnGainCoins(wave.CoinWaveReward);
                 yield return new WaitForSeconds(wave.TimeInterval);
                 StartWave();
             }
@@ -294,17 +315,16 @@ namespace TowerDefense.PathFinding
             if (FindPath() && runner)
             {
                 runner.transform.position = new Vector3(_startCell.x + .5f, _startCell.y+ .5f, 0);
-                _startNode.ShowNode(Color.green);
+                
+                // _startNode.ShowNode(Color.green);
 
-                foreach (Node node in _path)
-                {
-                    Debug.Log(
-                        $"Node: x:{node.x} | y:{node.y} | fcost:{node.fCost} | hcost:{node.hCost} | gcost:{node.gCost}");
-                    if (node == _targetNode)
-                        node.ShowNode(Color.red);
-                    else
-                        node.ShowNode(Color.grey);
-                }
+                // foreach (Node node in _path)
+                // {
+                //     if (node == _targetNode)
+                //         node.ShowNode(Color.red);
+                //     else
+                //         node.ShowNode(Color.grey);
+                // }
                 
                 runner.AddPath(_path);
             }

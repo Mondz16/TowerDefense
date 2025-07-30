@@ -268,7 +268,6 @@ GameObject:
   m_Component:
   - component: {fileID: 24149132}
   - component: {fileID: 24149136}
-  - component: {fileID: 24149135}
   - component: {fileID: 24149134}
   - component: {fileID: 24149133}
   m_Layer: 5
@@ -340,23 +339,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &24149135
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 24149131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa8b42ee8e6c6af4f8b5da1403b3b0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defenderID: 0
-  _canvas: {fileID: 936694940}
-  _canvasGroup: {fileID: 24149133}
-  _rectTransform: {fileID: 24149132}
-  _cover: {fileID: 0}
 --- !u!222 &24149136
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1283,7 +1265,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &344263469
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1350,8 +1332,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 461351864}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OnPlayButtonClickedEventTrigger
+        m_TargetAssemblyTypeName: TowerDefense.Manager.UIManager, Assembly-CSharp
+        m_MethodName: OnNormalSpeedButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1360,6 +1342,30 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 344263468}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 656606704}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &344263471
 MonoBehaviour:
@@ -2471,7 +2477,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 237.5, y: -62.5}
+  m_AnchoredPosition: {x: 87.00008, y: -62.5}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &656606706
@@ -2522,6 +2528,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: OnPauseButtonClicked
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 344263468}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 656606704}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3190,7 +3220,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -28.2, y: 0}
+  m_AnchoredPosition: {x: -28.199951, y: 0}
   m_SizeDelta: {x: 145.1333, y: 75}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &804252275
@@ -3682,7 +3712,6 @@ GameObject:
   m_Component:
   - component: {fileID: 954699391}
   - component: {fileID: 954699395}
-  - component: {fileID: 954699394}
   - component: {fileID: 954699393}
   - component: {fileID: 954699392}
   m_Layer: 5
@@ -3754,23 +3783,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &954699394
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 954699390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa8b42ee8e6c6af4f8b5da1403b3b0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defenderID: 0
-  _canvas: {fileID: 936694940}
-  _canvasGroup: {fileID: 954699392}
-  _rectTransform: {fileID: 954699391}
-  _cover: {fileID: 0}
 --- !u!222 &954699395
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4002,7 +4014,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1137186287}
   - component: {fileID: 1137186291}
-  - component: {fileID: 1137186290}
   - component: {fileID: 1137186289}
   - component: {fileID: 1137186288}
   m_Layer: 5
@@ -4074,23 +4085,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1137186290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1137186286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa8b42ee8e6c6af4f8b5da1403b3b0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defenderID: 0
-  _canvas: {fileID: 936694940}
-  _canvasGroup: {fileID: 1137186288}
-  _rectTransform: {fileID: 1137186287}
-  _cover: {fileID: 0}
 --- !u!222 &1137186291
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4650,7 +4644,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 29.2, y: -102}
+  m_AnchoredPosition: {x: 29.199951, y: -102}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1379339143
@@ -4967,7 +4961,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 387.5, y: -62.5}
+  m_AnchoredPosition: {x: 237, y: -62.5}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1494733453
@@ -5616,7 +5610,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1656637918}
   - component: {fileID: 1656637922}
-  - component: {fileID: 1656637921}
   - component: {fileID: 1656637920}
   - component: {fileID: 1656637919}
   m_Layer: 5
@@ -5688,23 +5681,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1656637921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1656637917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa8b42ee8e6c6af4f8b5da1403b3b0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defenderID: 0
-  _canvas: {fileID: 936694940}
-  _canvasGroup: {fileID: 1656637919}
-  _rectTransform: {fileID: 1656637918}
-  _cover: {fileID: 0}
 --- !u!222 &1656637922
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6543,7 +6519,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1871301578}
   - component: {fileID: 1871301582}
-  - component: {fileID: 1871301581}
   - component: {fileID: 1871301580}
   - component: {fileID: 1871301579}
   m_Layer: 5
@@ -6615,23 +6590,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1871301581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871301577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa8b42ee8e6c6af4f8b5da1403b3b0e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defenderID: 0
-  _canvas: {fileID: 936694940}
-  _canvasGroup: {fileID: 1871301579}
-  _rectTransform: {fileID: 1871301578}
-  _cover: {fileID: 0}
 --- !u!222 &1871301582
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11140,6 +11098,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 461351864}
+        m_TargetAssemblyTypeName: TowerDefense.Manager.UIManager, Assembly-CSharp
+        m_MethodName: OnPlayButtonClickedEventTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 640146465}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -11267,7 +11237,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1554918586053835744, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
       propertyPath: _poolItems.Array.size
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1554918586053835744, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
       propertyPath: _poolItems.Array.data[6].Growable
@@ -11291,6 +11261,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1554918586053835744, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
       propertyPath: _poolItems.Array.data[11].Growable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1554918586053835744, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
+      propertyPath: _poolItems.Array.data[12].Growable
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1554918586053835744, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
@@ -11389,6 +11363,14 @@ PrefabInstance:
       propertyPath: _poolItems.Array.data[11].PoolObject
       value: 
       objectReference: {fileID: 8983954291641269493, guid: d53070851e68fe547ad9e55ce3845222, type: 3}
+    - target: {fileID: 1554918586053835744, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
+      propertyPath: _poolItems.Array.data[12].PoolAmount
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1554918586053835744, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
+      propertyPath: _poolItems.Array.data[12].PoolObject
+      value: 
+      objectReference: {fileID: 8668702983419634656, guid: a080f593484c9b34baa2a359ba30f792, type: 3}
     - target: {fileID: 1615374546515833519, guid: d05f1885bc0a2f94ab52de9a01260f34, type: 3}
       propertyPath: m_Name
       value: PoolManager

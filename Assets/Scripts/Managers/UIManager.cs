@@ -28,7 +28,8 @@ namespace TowerDefense.Manager
         [SerializeField] private GameObject _losePostGameHolder;
 
         [SerializeField] private List<DefenderDrag> _defenderDragList;
-
+        private bool _isWaveStarted = false;
+        
         public static Action<DefenderID> OnDefenderDropEvent { get; set; }
         public static Action OnPlayButtonClickedEvent { get; set; }
         public static Action OnRestartButtonClickedEvent { get; set; }
@@ -103,6 +104,8 @@ namespace TowerDefense.Manager
         private void OnStartWaveStarted(Wave wave)
         {
             _enemyWaveCounterManager.SetCurrentEnemyWave(wave);
+
+            _isWaveStarted = true;
         }
         
         private void ShowNextWaveTimer(float interval, int wave)
@@ -111,6 +114,8 @@ namespace TowerDefense.Manager
             _timer.OnSecondUpdate += TimerCountdown;
             _timer.OnTimerEnd += OnTimerEnds;
             _timer.OnTimerEnd += () => UpdateWave(wave);
+            
+            _isWaveStarted = false;
         }
         
         private void TimerCountdown(float seconds)
@@ -138,7 +143,7 @@ namespace TowerDefense.Manager
         {
             _coinText.text = coins.ToString();
             foreach (DefenderDrag defenderDrag in _defenderDragList)
-                defenderDrag.UpdateDefenderState(coins);
+                defenderDrag.UpdateDefenderState(_isWaveStarted, coins);
         }
 
         public void OnUpgradeDefenderEventTriggered()

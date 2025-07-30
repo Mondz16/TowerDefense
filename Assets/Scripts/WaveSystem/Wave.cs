@@ -26,21 +26,24 @@ namespace TowerDefense.WaveSystem
             return _waveAttributeList;
         }
 
-        public List<WaveAttribute> GetAllEnemyWaveCount()
+        public List<WaveRunner> GetAllEnemyWaveCount()
         {
-            List<WaveAttribute> waveAttributeList = new List<WaveAttribute>();
-            foreach (RunnerID runnerId in _runnerIds)
+            List<WaveRunner> waveRunner = new List<WaveRunner>();
+            foreach (WaveAttribute attribute in _waveAttributeList)
             {
-                var runnerList = _waveAttributeList.FindAll(x => x.RunnerID == runnerId);
-                int count = 0;
-                foreach (WaveAttribute runnerAttribute in runnerList)
-                    count += runnerAttribute.EnemyCount;
+                foreach (RunnerID runnerId in _runnerIds)
+                {
+                    var runnerList = attribute.WaveRunners.FindAll(x => x.RunnerID == runnerId);
+                    int count = 0;
+                    foreach (WaveRunner runnerAttribute in runnerList)
+                        count += runnerAttribute.EnemyCount;
 
-                if(count != 0)
-                    waveAttributeList.Add(new WaveAttribute(runnerId, count));
+                    if(count != 0)
+                        waveRunner.Add(new WaveRunner(runnerId, count));
+                }
             }
 
-            return waveAttributeList;
+            return waveRunner;
         }
 
         public WaveAttribute GetWaveAttributeListByRandom()
@@ -52,12 +55,19 @@ namespace TowerDefense.WaveSystem
     [Serializable]
     public class WaveAttribute
     {
+        public float MinSpawnTime;
+        public float MaxSpawnTime;
+        public List<WaveRunner> WaveRunners = new List<WaveRunner>();
+    }
+    
+    [Serializable]
+    public class WaveRunner
+    {
         public RunnerID RunnerID;
         public int EnemyCount;
+        public WaveRunner(){}
 
-        public WaveAttribute(){}
-
-        public WaveAttribute(RunnerID id, int enemyCount)
+        public WaveRunner(RunnerID id, int enemyCount)
         {
             RunnerID = id;
             EnemyCount = enemyCount;

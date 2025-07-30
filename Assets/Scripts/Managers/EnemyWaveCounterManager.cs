@@ -21,12 +21,12 @@ namespace TowerDefense.UI
             transform.DeleteChildren();
             _currentWave = wave;
             var allEnemyWaveCount = _currentWave.GetAllEnemyWaveCount();
-            foreach (WaveAttribute waveAttribute in allEnemyWaveCount)
+            foreach (WaveRunner runner in allEnemyWaveCount)
             {
-                var runnerData = _runnerDataCollection.GetRunnerDataByID(waveAttribute.RunnerID);
+                var runnerData = _runnerDataCollection.GetRunnerDataByID(runner.RunnerID);
                 
                 var enemyCounterUI = Instantiate(_enemyCounterUIPrefab, transform);
-                enemyCounterUI.SetEnemyCounterUI(runnerData.RunnerVisual, waveAttribute.EnemyCount, waveAttribute.RunnerID);
+                enemyCounterUI.SetEnemyCounterUI(runnerData.RunnerVisual, runner.EnemyCount, runner.RunnerID);
             }
         }
     }

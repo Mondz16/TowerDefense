@@ -15,6 +15,8 @@ namespace TowerDefense.PathFinding
         public RunnerData RunnerData => _runnerData;
         
         [SerializeField][ReadOnly]private RunnerData _runnerData;
+        [SerializeField]
+        private GameObject _deathEffect;
         
         [SerializeField]
         private List<Node> _path = new List<Node>();
@@ -66,6 +68,7 @@ namespace TowerDefense.PathFinding
             if (_runnerData.Health - 1 <= 0)
             {
                 _gameDataManager.OnGainCoins(_runnerData.CoinReward);
+                _poolManager.UseObject(_deathEffect, transform.position, _deathEffect.transform.rotation);
                 OnRunnerDisappear?.Invoke(gameObject);
                 _poolManager.ReturnObject(gameObject);
             }

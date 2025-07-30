@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: EasyWave1
   m_EditorClassIdentifier: 
   _difficulty: 0
-  _timeInterval: 5
-  _coinWaveReward: 20
+  _timeInterval: 15
+  _coinWaveReward: 10
   _waveAttributeList:
-  - RunnerID: 0
-    EnemyCount: 20
-  - RunnerID: 1
-    EnemyCount: 10
+  - MinSpawnTime: 1.5
+    MaxSpawnTime: 3
+    WaveRunners:
+    - RunnerID: 1
+      EnemyCount: 5
+    - RunnerID: 3
+      EnemyCount: 3

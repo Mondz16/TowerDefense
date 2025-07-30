@@ -28,13 +28,16 @@ namespace TowerDefense.Manager
         
         [SerializeField]
         private int _playerhealth;
+        [SerializeField]
+        private int _startingCount = 10;
+        [SerializeField]
         private int _playerCoins;
         private bool _isPlayerDead = false;
 
         private void Start()
         {
             _isPlayerDead = false;
-            OnGainCoins(200);
+            OnGainCoins(_startingCount);
         }
 
         public void OnGainCoins(int reward)

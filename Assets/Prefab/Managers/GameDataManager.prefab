@@ -44,4 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27309e21d26e4a89af1e4527eed4033f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerhealth: 10
+  _playerhealth: 20
+  _startingCount: 50
+  _playerCoins: 0

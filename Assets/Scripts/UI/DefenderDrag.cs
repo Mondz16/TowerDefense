@@ -41,10 +41,14 @@ public class DefenderDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         }
     }
 
-    public void UpdateDefenderState(int coins)
+    public void UpdateDefenderState(bool active, int coins)
     {
         int defenderCost = _defenderDataCollection.GetDefenderStatsByLevel(_defenderID, 1).Cost;
-        _cover.SetActive(coins < defenderCost);
+        Debug.Log($"#{GetType().Name}# Defender State: {active} - {coins < defenderCost}");
+        if(!active)
+            _cover.SetActive(coins < defenderCost);
+        else
+            _cover.SetActive(true);
     }
 
     public void OnPointerDown(PointerEventData eventData)

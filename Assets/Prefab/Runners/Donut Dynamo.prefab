@@ -107,6 +107,7 @@ MonoBehaviour:
     Description: 
     Prefab: {fileID: 0}
     RunnerVisual: {fileID: 0}
+  _deathEffect: {fileID: 8668702983419634656, guid: a080f593484c9b34baa2a359ba30f792, type: 3}
   _path:
   - {fileID: 0}
   - {fileID: 0}

@@ -16,8 +16,7 @@ MonoBehaviour:
   - Difficulty: 0
     LevelWaveList:
     - {fileID: 11400000, guid: 1d5cbef58dcaed04b920f949af1b8dff, type: 2}
-    - {fileID: 11400000, guid: c4862ab04eb0e1e41b39e5d68643be65, type: 2}
-    - {fileID: 11400000, guid: b1ba0fbc769483142af4db05582a88ca, type: 2}
-    - {fileID: 11400000, guid: 715bc05e4aba831428f1dbd118cfe7f0, type: 2}
-    - {fileID: 11400000, guid: 878ae65bc1477ae44a2b0855eeaba98d, type: 2}
-    - {fileID: 11400000, guid: 7150e4b9a88142c45aad1988147d40c3, type: 2}
+    - {fileID: 11400000, guid: 36972450a0976614a8ad33a060034902, type: 2}
+    - {fileID: 11400000, guid: 62e98383a4b51b445bebc4ab08dc821e, type: 2}
+    - {fileID: 11400000, guid: d9d6c85bc2c7d0049b7d8d21b32d4b18, type: 2}
+    - {fileID: 11400000, guid: 090b79023d169594797549dcff3efa71, type: 2}
